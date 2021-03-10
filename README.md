@@ -1,24 +1,50 @@
-# An example Starlette application
+# POC
 
-Install and run:
+The same current front-end, served by taiga-front querying two different urls (and services):
+* one resolving against the previous Django (taiga-back)
+* the other one resolving against the new api POC's urls
 
-```shell
-git clone https://github.com/encode/starlette-example.git
-cd starlette-example
-scripts/install
-scripts/run
+## POC Implementation
+
+Currently, the POC enables a PATCH endpoint that allows to update the subject of a user story.
+
+Check the file `src/poc/api2.py`
+```python
+routes = [
+    # ...
+    Route("/api2/v1/userstories/{id}", update_us, methods=["PATCH"]),
+]
 ```
 
-Open `http://127.0.0.1:8000/` in your browser:
+Endpoint
+`api/v1/userstories/118 (PATCH)`
 
-![Homepage](https://raw.githubusercontent.com/encode/starlette-example/master/docs/index.png)
+```json
+// From 'US001' to 'US002'
+{
+  // The new value
+  subject: "US002",
+  // Consequent updates increase this number by 1
+  version: 2
+}
+```
 
-Navigate to path that is not routed, eg `http://127.0.0.1:8000/nope`:
+It remains to be implemented:
 
-![Homepage](https://raw.githubusercontent.com/encode/starlette-example/master/docs/404.png)
+* the complete serializing of the user story object, returning linked fields as it's rendered
+in taiga-back. Probably using  [Pydantic](https://pydantic-docs.helpmanual.io/usage/models/) if SQLalchemy_serializer 
+is not enough.
 
-Raise a server error by navigating to `http://127.0.0.1:8000/error`:
+* finish the rest of calls that taiga's front-end performs when editing the subject of a user story 
+(like getting the user story's activity).
 
-![Homepage](https://raw.githubusercontent.com/encode/starlette-example/master/docs/500.png)
+* implement the endpoints that taiga's front-end requires for rendering a kanban with a thousand of user stories. 
 
-Switch the `app = Starlette(debug=True)` line to `app = Starlette()` to see a regular 500 page instead.
+## POC execution
+
+Please, execute the following commands to execute the POC:
+```shell
+$ pip3 install -r requirements.txt  # to install the required modules
+$ . venv/bin/activate      # loading of python venv
+$ python3 src/poc/api2.py  # launching the poc in uvicorn 
+```

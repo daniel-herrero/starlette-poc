@@ -6,8 +6,6 @@ from starlette.applications import Starlette
 from starlette.responses import JSONResponse, PlainTextResponse, HTMLResponse, StreamingResponse, Response, \
     RedirectResponse
 from starlette.routing import Route, WebSocketRoute, Mount
-from starlette.config import Config
-
 
 # HTML Response
 from starlette.schemas import SchemaGenerator

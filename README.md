@@ -73,8 +73,8 @@ Ideally, it should be rendered a diff version with updated fields
 
 ### Large volume of data
 
-The POC also verified its behaviour when recovering and serializing from database, a large volume of strongly related 
-objects.
+The POC also verifies the behaviour when recovering and serializing from the database, a large volume of strongly 
+related objects.
 
 Mainly, it would be analyzed the process of loading sample data, mapping against tables, and the schemas serialization 
 returned in the endpoint.

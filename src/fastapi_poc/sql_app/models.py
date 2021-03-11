@@ -43,7 +43,7 @@ class UserStory(Base):
 
     id = Column(Integer, primary_key=True)
     tags = Column(JSON)
-    version = Column(Integer)
+    version = Column(Integer, nullable=False)
     is_blocked = Column(Boolean)
     blocked_note = Column(String)
     ref = Column(Integer)
@@ -73,3 +73,10 @@ class UserStory(Base):
     generated_from_task_id = Column(Integer)
     from_task_ref = Column(String)
     swimlane_id = Column(Integer)
+
+    __mapper_args__ = {
+        # https://docs.sqlalchemy.org/en/14/orm/versioning.html?highlight=concurrency
+        'version_id_col': version,
+        # 'version_id_generator': lambda version: version+1
+        # it automatically increases the version on any update/delete operation
+    }

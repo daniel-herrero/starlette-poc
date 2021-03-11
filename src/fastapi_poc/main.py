@@ -1,6 +1,6 @@
 from typing import List, Optional
 
-from fastapi import Depends, FastAPI, HTTPException
+from fastapi import Depends, FastAPI, HTTPException, Form
 from sqlalchemy.orm import Session
 from sql_app import crud, models, schemas
 from sql_app.database import SessionLocal, engine
@@ -43,7 +43,17 @@ def read_userstories(skip: int = 0, limit: int = 100, db: Session = Depends(get_
 def read_us(us_id: int, db: Session = Depends(get_db)):
     db_us = crud.get_us(db, us_id=us_id)
     if db_us is None:
-        raise HTTPException(status_code=404, detail="User not found")
+        raise HTTPException(status_code=404, detail="Userstory not found")
     return db_us
+
+
+@app.patch("/userstories/{us_id}", response_model=schemas.UserStoryBase)
+def update_us_title(us_id: int, subject: str = Form(...), version: int = Form(...), db: Session = Depends(get_db)):
+    us = crud.get_us(db, us_id=us_id)
+    if us is None:
+        raise HTTPException(status_code=404, detail="Userstory not found")
+    else:
+        db_us = crud.update_us_subject(db, us, subject, version)
+        return db_us
 
 

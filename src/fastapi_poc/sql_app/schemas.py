@@ -1,3 +1,5 @@
+from typing import List
+
 from pydantic import BaseModel
 from pydantic.schema import datetime, Optional, Dict, Any
 
@@ -44,7 +46,7 @@ class UserBase(BaseModel):
 class UserStoryBase(BaseModel):
     id: int
     version: int
-    tags: Any
+    tags: List[str]
     id: int
     is_blocked: bool
     blocked_note: str

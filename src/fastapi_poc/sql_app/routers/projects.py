@@ -1,34 +1,31 @@
 from fastapi import APIRouter
-from starlette.exceptions import HTTPException
+from typing import List
 
-from .. import schemas, crud, models
-from ..database import engine, SessionLocal
 from fastapi import Depends
 from sqlalchemy.orm import Session
-from typing import List
+
+from fastapi_poc.sql_app.database import SessionLocal, engine
+from fastapi_poc.sql_app import schemas, crud, models
+from fastapi_poc.sql_app.database import get_db
+from starlette.exceptions import HTTPException
 
 
 models.Base.metadata.create_all(bind=engine)
 
-router = APIRouter()
+router = APIRouter(
+    prefix="/projects",
+    tags=["projects"],
+    responses={404: {"description": "Not found"}},
+)
 
 
-# Dependency
-def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
-
-
-@router.get("/projects/", response_model=List[schemas.ProjectBase])
+@router.get("/", response_model=List[schemas.ProjectBase])
 def read_projects(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     projects = crud.get_projects(db, skip=skip, limit=limit)
     return projects
 
 
-@router.get("/projects/{project_id}", response_model=schemas.ProjectBase)
+@router.get("/{project_id}", response_model=schemas.ProjectBase)
 def read_project(project_id: int, db: Session = Depends(get_db)):
     db_project = crud.get_project(db, project_id=project_id)
     if db_project is None:

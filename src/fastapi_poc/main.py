@@ -1,12 +1,13 @@
 from fastapi import FastAPI
 from starlette.responses import JSONResponse
 from sqlalchemy.orm.exc import StaleDataError
-from sql_app.routers import users, userstories
+from sql_app.routers import users, userstories, projects
 
 app = FastAPI()
 
 app.include_router(users.router)
 app.include_router(userstories.router)
+app.include_router(projects.router)
 
 
 @app.exception_handler(StaleDataError)

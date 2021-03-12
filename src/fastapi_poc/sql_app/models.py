@@ -1,4 +1,4 @@
-from sqlalchemy import Boolean, Column, ForeignKey, Integer, String, Date, TIMESTAMP, Text, JSON
+from sqlalchemy import ARRAY, Boolean, Column, DateTime, ForeignKey, Float, Integer, String, Date, TIMESTAMP, Text, JSON
 from sqlalchemy.orm import relationship
 
 from .database import Base
@@ -38,6 +38,64 @@ class User(Base):
     is_staff = Column(Boolean)
 
 
+class Project(Base):
+    __tablename__ = 'projects_project'
+
+    id = Column(Integer, primary_key=True)
+    tags = Column(JSON)
+    name = Column(String)
+    slug = Column(String)
+    description = Column(String)
+    created_date = Column(TIMESTAMP)
+    modified_date = Column(TIMESTAMP)
+    total_milestones = Column(Integer)
+    total_story_points = Column(Float)
+    is_backlog_activated = Column(Boolean)
+    is_kanban_activated = Column(Boolean)
+    is_wiki_activated = Column(Boolean)
+    is_issues_activated = Column(Boolean)
+    videoconferences = Column(String)
+    videoconferences_extra_data = Column(String)
+    anon_permissions = Column(JSON)
+    public_permissions = Column(JSON)
+    is_private = Column(Boolean)
+    tags_colors = Column(ARRAY(String))
+    owner_id = Column(ForeignKey('users_user.id'))
+    creation_template_id = Column(Integer)
+    default_issue_status_id = Column(Integer)
+    default_issue_type_id = Column(Integer)
+    default_points_id = Column(Integer)
+    default_priority_id = Column(Integer)
+    default_severity_id = Column(Integer)
+    default_task_status_id = Column(Integer)
+    default_us_status_id = Column(Integer)
+    issues_csv_uuid = Column(String)
+    tasks_csv_uuid = Column(String)
+    userstories_csv_uuid = Column(String)
+    is_featured = Column(Boolean)
+    is_looking_for_people = Column(Boolean)
+    total_activity = Column(Integer)
+    total_activity_last_month = Column(Integer)
+    total_activity_last_week = Column(Integer)
+    total_activity_last_year = Column(Integer)
+    total_fans = Column(Integer)
+    total_fans_last_month = Column(Integer)
+    total_fans_last_week = Column(Integer)
+    total_fans_last_year = Column(Integer)
+    totals_updated_datetime = Column(TIMESTAMP)
+    logo = Column(String)
+    looking_for_people_note = Column(String)
+    blocked_code = Column(String)
+    transfer_token = Column(String)
+    is_epics_activated = Column(Boolean)
+    default_epic_status_id = Column(Integer)
+    epics_csv_uuid = Column(String)
+    is_contact_activated = Column(Boolean)
+    default_swimlane_id = Column(Integer)
+
+    owner = relationship("User", foreign_keys=[owner_id])
+
+
 class UserStory(Base):
     __tablename__ = 'userstories_userstory'
 
@@ -58,11 +116,9 @@ class UserStory(Base):
     team_requirement = Column(Boolean)
     assigned_to_id = Column(Integer, ForeignKey('users_user.id'))
     owner_id = Column(Integer, ForeignKey('users_user.id'))
-    assigned_to = relationship("User", foreign_keys=[assigned_to_id])
-    owner = relationship("User", foreign_keys=[owner_id])
     generated_from_issue_id = Column(Integer)
     milestone_id = Column(Integer)
-    project_id = Column(Integer)
+    project_id = Column(Integer, ForeignKey('projects_project.id'))
     status_id = Column(Integer)
     sprint_order = Column(Integer)
     kanban_order = Column(Integer)
@@ -73,6 +129,10 @@ class UserStory(Base):
     generated_from_task_id = Column(Integer)
     from_task_ref = Column(String)
     swimlane_id = Column(Integer)
+
+    assigned_to = relationship("User", foreign_keys=[assigned_to_id])
+    owner = relationship("User", foreign_keys=[owner_id])
+    project = relationship("Project", foreign_keys=[project_id])
 
     __mapper_args__ = {
         # https://docs.sqlalchemy.org/en/14/orm/versioning.html?highlight=concurrency

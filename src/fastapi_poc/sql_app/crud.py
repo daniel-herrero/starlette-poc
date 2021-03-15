@@ -20,6 +20,14 @@ def get_project(db: Session, project_id: int):
     return db.query(models.Project).filter(models.Project.id == project_id).first()
 
 
+def get_epics(db: Session, skip: int = 0, limit: int = 100):
+    return db.query(models.Epic).offset(skip).limit(limit).all()
+
+
+def get_epic(db: Session, epic_id: int):
+    return db.query(models.Epic).filter(models.Epic.id == epic_id).first()
+
+
 def get_uss(db: Session, skip: int = 0, limit: int = 100):
     return db.query(models.UserStory)\
         .order_by(desc(models.UserStory.id))\

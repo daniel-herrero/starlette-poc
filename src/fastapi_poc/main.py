@@ -9,7 +9,7 @@ from starlette.responses import JSONResponse
 from sqlalchemy.orm.exc import StaleDataError
 # from fastapi_poc.sql_app.routers import users
 from fastapi_poc.sql_app import crud
-from fastapi_poc.sql_app.routers import users, userstories, projects
+from fastapi_poc.sql_app.routers import users, userstories, projects, epics
 from fastapi_poc import notifier
 
 
@@ -18,6 +18,7 @@ app = FastAPI()
 app.include_router(users.router)
 app.include_router(userstories.router)
 app.include_router(projects.router)
+app.include_router(epics.router)
 
 
 @app.get("/push/{message}")

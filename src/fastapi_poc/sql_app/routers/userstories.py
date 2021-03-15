@@ -20,14 +20,14 @@ router = APIRouter(
 )
 
 
-@router.get("/", response_model=List[schemas.UserStoryBase])
+@router.get("/", response_model=List[schemas.UserStory])
 async def read_userstories(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     uss = crud.get_uss(db, skip=skip, limit=limit)
     await send_ws_notification("database_read",  "userstories")
     return uss
 
 
-@router.get("/{us_id}", response_model=schemas.UserStoryBase)
+@router.get("/{us_id}", response_model=schemas.UserStory)
 async def read_us(us_id: int, db: Session = Depends(get_db)):
     db_us = crud.get_us(db, us_id=us_id)
     if db_us is None:
@@ -37,7 +37,7 @@ async def read_us(us_id: int, db: Session = Depends(get_db)):
     return db_us
 
 
-@router.patch("/{us_id}", response_model=schemas.UserStoryBase)
+@router.patch("/{us_id}", response_model=schemas.UserStory)
 async def update_us_title(us_id: int, subject: str = Form(...), version: int = Form(...), db: Session = Depends(get_db)):
     us = crud.get_us(db, us_id=us_id)
     if us is None:
@@ -48,7 +48,7 @@ async def update_us_title(us_id: int, subject: str = Form(...), version: int = F
         return db_us
 
 
-@router.patch("/{us_id}/sleep/{num_secs}", response_model=schemas.UserStoryBase)
+@router.patch("/{us_id}/sleep/{num_secs}", response_model=schemas.UserStory)
 async def update_us_title(us_id: int, subject: str = Form(...), version: int = Form(...), num_secs: int = 0,
                     db: Session = Depends(get_db)):
 

@@ -10,16 +10,22 @@ class Config:
 
 class UserBase(BaseModel):
     id: int
+    username: str
+    photo: str
+    is_active: bool
+
+    class Config:
+        orm_mode = True
+
+
+class User(UserBase):
     password: str
     last_login: Optional[datetime] = None
     is_superuser: bool
-    username: str
     email: str
-    is_active: bool
     full_name: str
     color: str
     bio: str
-    photo: str
     date_joined: datetime
     lang: str
     timezone: str
@@ -43,19 +49,17 @@ class UserBase(BaseModel):
         orm_mode = True
 
 
-class UserProjectBase(BaseModel):
+class ProjectBase(BaseModel):
     id: int
-    username: str
+    name: str
+    slug: str
 
     class Config:
         orm_mode = True
 
 
-class ProjectBase(BaseModel):
-    id: int
+class Project(ProjectBase):
     tags: List[str]
-    name: str
-    slug: str
     description: str
     created_date: datetime
     modified_date: datetime
@@ -70,7 +74,7 @@ class ProjectBase(BaseModel):
     anon_permissions: List[str]
     public_permissions: List[str]
     is_private: bool
-    owner: UserProjectBase
+    owner: UserBase
     creation_template_id: Optional[int]
     default_issue_status_id: Optional[int]
     default_issue_type_id: Optional[int]
@@ -110,25 +114,59 @@ class ProjectBase(BaseModel):
 class UserStoryBase(BaseModel):
     id: int
     version: int
-    tags: List[str]
+    created_date: datetime
+    modified_date: datetime
+    subject: str
+    owner: UserBase
+    project: ProjectBase
+
+    class Config:
+        orm_mode = True
+
+
+class EpicBase(BaseModel):
     id: int
+    color: str
+    project: ProjectBase
+    ref: Optional[int]
+    subject: str
+
+    class Config:
+        orm_mode = True
+
+
+class Epic(EpicBase):
+    user_stories: Optional[List[UserStoryBase]]
+
+    class Config:
+        orm_mode = True
+
+
+
+class EpicsRelateduserstoryBase(BaseModel):
+    id: int
+    order: int
+    epic: EpicBase
+    user_story: UserStoryBase
+
+    class Config:
+        orm_mode = True
+
+
+class UserStory(UserStoryBase):
+    tags: List[str]
     is_blocked: bool
     blocked_note: str
     ref: int
     is_closed: bool
     backlog_order: str
-    created_date: datetime
-    modified_date: datetime
     finish_date: Optional[datetime]
-    subject: str
     description: str
     client_requirement: bool
     team_requirement: bool
     assigned_to: Optional[UserBase]
-    owner: UserBase
     generated_from_issue_id: Optional[int]
     milestone_id: Optional[int]
-    project: ProjectBase
     status_id: int
     sprint_order: int
     kanban_order: int
@@ -139,6 +177,10 @@ class UserStoryBase(BaseModel):
     generated_from_task_id: Optional[int]
     from_task_ref: Optional[str]
     swimlane_id: Optional[int]
+    epics: Optional[List[EpicBase]]
 
     class Config:
         orm_mode = True
+
+
+

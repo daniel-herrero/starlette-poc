@@ -15,7 +15,7 @@ router = APIRouter(
 )
 
 
-@router.get("/", response_model=List[schemas.UserBase])
+@router.get("/", response_model=List[schemas.User])
 async def read_users(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     await send_ws_notification("database_read", "users")
 
@@ -23,7 +23,7 @@ async def read_users(skip: int = 0, limit: int = 100, db: Session = Depends(get_
     return users
 
 
-@router.get("/{user_id}", response_model=schemas.UserBase)
+@router.get("/{user_id}", response_model=schemas.User)
 async def read_user(user_id: int, db: Session = Depends(get_db)):
     db_user = crud.get_user(db, user_id=user_id)
     if db_user is None:

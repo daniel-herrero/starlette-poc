@@ -1,4 +1,4 @@
-from sqlalchemy import ARRAY, Boolean, Column, DateTime, ForeignKey, Float, Integer, String, Date, TIMESTAMP, Text, JSON
+from sqlalchemy import ARRAY, BigInteger, Boolean, Column, DateTime, ForeignKey, Float, Integer, String, Date, TIMESTAMP, Text, JSON, UniqueConstraint
 from sqlalchemy.orm import relationship
 
 from .database import Base
@@ -96,6 +96,34 @@ class Project(Base):
     owner = relationship("User", foreign_keys=[owner_id])
 
 
+class Epic(Base):
+    __tablename__ = 'epics_epic'
+
+    id = Column(Integer, primary_key=True)
+    tags = Column(JSON)
+    version = Column(Integer)
+    is_blocked = Column(Boolean)
+    blocked_note = Column(Text)
+    ref = Column(BigInteger)
+    epics_order = Column(BigInteger)
+    created_date = Column(TIMESTAMP)
+    modified_date = Column(TIMESTAMP)
+    subject = Column(Text)
+    description = Column(Text)
+    client_requirement = Column(Boolean)
+    team_requirement = Column(Boolean)
+    assigned_to_id = Column(ForeignKey('users_user.id'))
+    owner_id = Column(ForeignKey('users_user.id'))
+    project_id = Column(ForeignKey('projects_project.id'))
+    color = Column(String)
+    external_reference = Column(JSON)
+
+    assigned_to = relationship('User', foreign_keys=[assigned_to_id])
+    owner = relationship('User', foreign_keys=[owner_id])
+    project = relationship('Project')
+    user_stories = relationship("UserStory", secondary = 'epics_relateduserstory')
+
+
 class UserStory(Base):
     __tablename__ = 'userstories_userstory'
 
@@ -133,6 +161,7 @@ class UserStory(Base):
     assigned_to = relationship("User", foreign_keys=[assigned_to_id])
     owner = relationship("User", foreign_keys=[owner_id])
     project = relationship("Project", foreign_keys=[project_id])
+    epics = relationship("Epic", secondary = 'epics_relateduserstory')
 
     __mapper_args__ = {
         # https://docs.sqlalchemy.org/en/14/orm/versioning.html?highlight=concurrency
@@ -140,3 +169,18 @@ class UserStory(Base):
         # 'version_id_generator': lambda version: version+1
         # it automatically increases the version on any update/delete operation
     }
+
+
+class EpicsRelateduserstory(Base):
+    __tablename__ = 'epics_relateduserstory'
+    __table_args__ = (
+        UniqueConstraint('user_story_id', 'epic_id'),
+    )
+
+    id = Column(Integer, primary_key=True)
+    order = Column(BigInteger)
+    epic_id = Column(ForeignKey('epics_epic.id'))
+    user_story_id = Column(ForeignKey('userstories_userstory.id'))
+
+    epic = relationship('Epic', foreign_keys=[epic_id])
+    user_story = relationship('UserStory',foreign_keys=[user_story_id])

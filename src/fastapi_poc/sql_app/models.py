@@ -177,6 +177,7 @@ class UserStory(Base):
     owner = relationship("User", foreign_keys=[owner_id])
     project = relationship("Project", foreign_keys=[project_id])
     epics = relationship("Epic", secondary = 'epics_relateduserstory')
+    tasks = relationship('Task', primaryjoin='Task.user_story_id == UserStory.id')
 
     __mapper_args__ = {
         # https://docs.sqlalchemy.org/en/14/orm/versioning.html?highlight=concurrency
@@ -199,3 +200,36 @@ class EpicsRelateduserstory(Base):
 
     epic = relationship('Epic', foreign_keys=[epic_id])
     user_story = relationship('UserStory',foreign_keys=[user_story_id])
+
+
+class Task(Base):
+    __tablename__ = 'tasks_task'
+
+    id = Column(Integer, primary_key=True)
+    tags = Column(JSON)
+    version = Column(Integer)
+    is_blocked = Column(Boolean)
+    blocked_note = Column(Text)
+    ref = Column(BigInteger)
+    created_date = Column(TIMESTAMP)
+    modified_date = Column(TIMESTAMP)
+    finished_date = Column(TIMESTAMP)
+    subject = Column(Text)
+    description = Column(Text)
+    is_iocaine = Column(Boolean)
+    assigned_to_id = Column(ForeignKey('users_user.id'))
+    milestone_id = Column(Integer)
+    owner_id = Column(ForeignKey('users_user.id'))
+    project_id = Column(ForeignKey('projects_project.id'))
+    status_id = Column(Integer)
+    user_story_id = Column(ForeignKey('userstories_userstory.id'))
+    taskboard_order = Column(BigInteger)
+    us_order = Column(BigInteger)
+    external_reference = Column(JSON)
+    due_date = Column(Date)
+    due_date_reason = Column(Text)
+
+    assigned_to = relationship('User', foreign_keys=[assigned_to_id])
+    owner = relationship('User', foreign_keys=[owner_id])
+    project = relationship('Project', foreign_keys=[project_id])
+    user_story = relationship('UserStory', foreign_keys=[user_story_id])

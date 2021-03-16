@@ -163,6 +163,42 @@ class EpicsRelateduserstoryBase(BaseModel):
         orm_mode = True
 
 
+class TaskBase(BaseModel):
+    id: int
+    is_blocked: bool
+    is_iocaine: bool
+    ref: Optional[int]
+    status_id: Optional[int]
+    subject: str
+
+    class Config:
+        orm_mode = True
+
+
+class Task(TaskBase):
+    tags: Optional[List[str]]
+    version: int
+    blocked_note: str
+    created_date: datetime
+    modified_date: datetime
+    finished_date: Optional[datetime]
+    description: str
+    assigned_to: Optional[UserBase]
+    milestone_id: Optional[int]
+    owner: UserBase
+    project: ProjectBase
+    status_id: int
+    user_story: UserStoryBase
+    taskboard_order: int
+    us_order: int
+    external_reference: Optional[List[str]]
+    due_date: Optional[datetime]
+    due_date_reason: str
+
+    class Config:
+        orm_mode = True
+
+
 class UserStory(UserStoryBase):
     tags: List[str]
     is_blocked: bool
@@ -188,6 +224,7 @@ class UserStory(UserStoryBase):
     from_task_ref: Optional[str]
     swimlane_id: Optional[int]
     epics: Optional[List[EpicBase]]
+    tasks: Optional[List[TaskBase]]
 
     class Config:
         orm_mode = True

@@ -91,9 +91,24 @@ class Project(Base):
     default_epic_status_id = Column(Integer)
     epics_csv_uuid = Column(String)
     is_contact_activated = Column(Boolean)
-    default_swimlane_id = Column(Integer)
+    default_swimlane_id = Column(ForeignKey('projects_swimlane.id'))
 
     owner = relationship("User", foreign_keys=[owner_id])
+    default_swimlane = relationship('ProjectsSwimlane', foreign_keys=[default_swimlane_id])
+
+
+class ProjectsSwimlane(Base):
+    __tablename__ = 'projects_swimlane'
+    __table_args__ = (
+        UniqueConstraint('project_id', 'name'),
+    )
+
+    id = Column(Integer, primary_key=True)
+    name = Column(Text)
+    order = Column(BigInteger)
+    project_id = Column(ForeignKey('projects_project.id'))
+
+    project = relationship('Project', foreign_keys=[project_id])
 
 
 class Epic(Base):

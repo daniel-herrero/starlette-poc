@@ -58,6 +58,16 @@ class ProjectBase(BaseModel):
         orm_mode = True
 
 
+class ProjectsSwimlaneBase(BaseModel):
+    id: int
+    name: str
+    order: int
+    project: ProjectBase
+
+    class Config:
+        orm_mode = True
+
+
 class Project(ProjectBase):
     tags: List[str]
     description: str

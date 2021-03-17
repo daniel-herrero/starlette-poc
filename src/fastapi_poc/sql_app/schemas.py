@@ -199,6 +199,14 @@ class Task(TaskBase):
         orm_mode = True
 
 
+class AttachmentBase(BaseModel):
+    id: int
+    attached_file: str
+
+    class Config:
+        orm_mode = True
+
+
 class UserStory(UserStoryBase):
     tags: List[str]
     is_blocked: bool

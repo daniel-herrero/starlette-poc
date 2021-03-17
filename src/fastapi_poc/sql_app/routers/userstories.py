@@ -21,7 +21,7 @@ router = APIRouter(
 
 
 @router.get("/", response_model=List[schemas.UserStory])
-async def read_userstories(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
+async def read_userstories(skip: int = 0, limit: int = 1000, db: Session = Depends(get_db)):
     uss = crud.get_uss(db, skip=skip, limit=limit)
     await send_ws_notification("database_read",  "userstories")
     return uss

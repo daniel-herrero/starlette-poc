@@ -1,4 +1,4 @@
-from sqlalchemy import ARRAY, BigInteger, Boolean, Column, DateTime, ForeignKey, Float, Integer, String, Date, TIMESTAMP, Text, JSON, UniqueConstraint
+from sqlalchemy import ARRAY, BigInteger, Boolean, CheckConstraint, Column, DateTime, ForeignKey, Float, Integer, String, Date, TIMESTAMP, Text, JSON, UniqueConstraint
 from sqlalchemy.orm import relationship
 
 from .database import Base
@@ -233,3 +233,26 @@ class Task(Base):
     owner = relationship('User', foreign_keys=[owner_id])
     project = relationship('Project', foreign_keys=[project_id])
     user_story = relationship('UserStory', foreign_keys=[user_story_id])
+
+
+class Attachment(Base):
+    __tablename__ = 'attachments_attachment'
+
+    id = Column(Integer, primary_key=True)
+    object_id = Column(Integer)
+    created_date = Column(TIMESTAMP)
+    modified_date = Column(TIMESTAMP)
+    attached_file = Column(String)
+    is_deprecated = Column(Boolean)
+    description = Column(Text)
+    order = Column(Integer)
+    content_type_id = Column(Integer)
+    owner_id = Column(ForeignKey('users_user.id'))
+    project_id = Column(ForeignKey('projects_project.id'))
+    name = Column(String)
+    size = Column(Integer)
+    sha1 = Column(String)
+    from_comment = Column(Boolean)
+
+    owner = relationship('User', foreign_keys=[owner_id])
+    project = relationship('Project', foreign_keys=[project_id])

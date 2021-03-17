@@ -1,14 +1,11 @@
 import os, sys, json
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
-from typing import List
 
 from fastapi import FastAPI
 from starlette.websockets import WebSocket, WebSocketDisconnect
 from starlette.responses import JSONResponse
 from sqlalchemy.orm.exc import StaleDataError
-# from fastapi_poc.sql_app.routers import users
-from fastapi_poc.sql_app import crud
 from fastapi_poc.sql_app.routers import users, userstories, projects, epics, tasks
 from fastapi_poc import notifier
 
@@ -48,14 +45,16 @@ async def startup():
 async def validation_exception_handler(request, exc):
     print(str(exc))
 
-    await notifier.push(json.dumps(
-        {
-            "exception": {
-                "code": "OCC.StaleDataError",
-                "text": "Content has been update by another user",
-                "message": str(exc),
+    await notifier.push("Back event " + json.dumps(
+            {
+                "event": "exception",
+                "details": {
+                    "code": "OCC.StaleDataError",
+                    "text": "Content has been update by another user",
+                    "message": str(exc),
+                }
             }
-        }))
+        ))
 
     return JSONResponse(_get_error("StaleDataError", "Content has been update by another user"), status_code=400)
 

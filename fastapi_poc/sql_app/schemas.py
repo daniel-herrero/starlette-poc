@@ -152,7 +152,6 @@ class Epic(EpicBase):
         orm_mode = True
 
 
-
 class EpicsRelateduserstoryBase(BaseModel):
     id: int
     order: int

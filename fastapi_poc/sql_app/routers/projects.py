@@ -4,7 +4,7 @@ from typing import List
 from fastapi import Depends
 from sqlalchemy.orm import Session
 
-from fastapi_poc.sql_app.database import SessionLocal, engine
+from fastapi_poc.sql_app.database import engine
 from fastapi_poc.sql_app import schemas, crud, models
 from fastapi_poc.sql_app.database import get_db
 from starlette.exceptions import HTTPException

@@ -232,6 +232,7 @@ class UserStory(UserStoryBase):
     swimlane_id: Optional[int]
     epics: Optional[List[EpicBase]]
     tasks: Optional[List[TaskBase]]
+    attachments: Optional[List[AttachmentBase]]
 
     class Config:
         orm_mode = True

@@ -38,7 +38,7 @@ def get_task(db: Session, task_id: int):
 
 def get_uss(db: Session, skip: int = 0, limit: int = 100):
     return db.query(models.UserStory)\
-        .order_by(desc(models.UserStory.id))\
+        .order_by(models.UserStory.id)\
         .offset(skip)\
         .limit(limit).all()
 

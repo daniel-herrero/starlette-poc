@@ -3,8 +3,8 @@ from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 from starlette.exceptions import HTTPException
 
-from fastapi_poc.sql_app import schemas, crud
-from fastapi_poc.sql_app.database import get_db
+from app.database import schemas, crud
+from app.database.database import get_db
 
 
 router = APIRouter(

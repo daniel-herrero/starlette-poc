@@ -1,4 +1,3 @@
-import json
 from asyncio import sleep
 from datetime import datetime
 from typing import List
@@ -9,12 +8,12 @@ from sqlalchemy.orm import Session
 from starlette.exceptions import HTTPException
 from sqlalchemy.orm.exc import StaleDataError
 
-from fastapi_poc.sql_app.crud import create_activity
-from fastapi_poc.sql_app.database import engine
-from fastapi_poc.sql_app import schemas, crud, models
-from fastapi_poc.sql_app.database import get_db
-from fastapi_poc import send_ws_notification
-from fastapi_poc.sql_app.schemas import DbActivityBase
+from app.database import schemas, crud, models
+from app.database.crud import create_activity
+from app.database.database import engine, get_db
+
+from app import send_ws_notification
+from app.database.schemas import DbActivityBase
 
 models.Base.metadata.create_all(bind=engine)
 

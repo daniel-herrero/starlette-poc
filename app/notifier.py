@@ -1,6 +1,5 @@
-import json
 from typing import List
-from starlette.websockets import WebSocket, WebSocketDisconnect
+from starlette.websockets import WebSocket
 
 
 # https://gist.github.com/wshayes/8b0bf51397131c018d0e3f735eb02784

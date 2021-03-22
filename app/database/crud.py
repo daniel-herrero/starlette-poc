@@ -1,8 +1,6 @@
-from sqlalchemy import desc
 from sqlalchemy.orm import Session
 
 from . import models
-from .models import DbActivity
 from .schemas import DbActivityBase
 
 

@@ -1,38 +1,14 @@
 import os, sys, json
-
-sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
-
-from fastapi import FastAPI
-from starlette.websockets import WebSocket, WebSocketDisconnect
 from starlette.responses import JSONResponse
 from sqlalchemy.orm.exc import StaleDataError
-from fastapi_poc.sql_app.routers import users, userstories, projects, epics, tasks
-from fastapi_poc import notifier
-
+from fastapi import FastAPI
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
+from app.routers.api import api_router
+from app import notifier, Notifier
 
 app = FastAPI()
 
-app.include_router(users.router)
-app.include_router(userstories.router)
-app.include_router(projects.router)
-app.include_router(epics.router)
-app.include_router(tasks.router)
-
-
-@app.get("/push/{message}")
-async def push_to_connected_websockets(message: str):
-    await notifier.push(f"! Push notification: {message} !")
-
-
-@app.websocket("/events")
-async def websocket_endpoint(websocket: WebSocket):
-    await notifier.connect(websocket)
-    try:
-        while True:
-            data = await websocket.receive_text()
-            await websocket.send_text(f"Back event (echo) {websocket.client.host}: '{data}'")
-    except WebSocketDisconnect:
-        notifier.remove(websocket)
+app.include_router(api_router)
 
 
 @app.on_event("startup")

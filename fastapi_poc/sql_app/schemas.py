@@ -238,4 +238,21 @@ class UserStory(UserStoryBase):
         orm_mode = True
 
 
+class DbActivityBase(BaseModel):
+    created_at: datetime
+    event: str
+    project_id: int
+    obj_id: int
+    obj_type: str
+    obj_changes: Optional[dict]
 
+
+class DbActivityCreate(DbActivityBase):
+    pass
+
+
+class DbActivity(DbActivityCreate):
+    id: int
+
+    class Config:
+        orm_mode = True

@@ -2,6 +2,8 @@ from sqlalchemy import desc
 from sqlalchemy.orm import Session
 
 from . import models
+from .models import DbActivity
+from .schemas import DbActivityBase
 
 
 def get_users(db: Session, skip: int = 0, limit: int = 100):
@@ -51,3 +53,13 @@ def update_us_subject(db: Session, db_us: models.UserStory, subject: str, versio
     db_us.subject = subject
     db.commit()
     return db_us
+
+
+# def create_activity(db: Session, event: str, obj_type: str, obj_id: str, project_id: str, obj_changes):
+def create_activity(db: Session, db_activity: DbActivityBase):
+    db_activity = models.DbActivity(**db_activity.dict())
+    db.add(db_activity)
+    db.commit()
+    db.refresh(db_activity)
+
+    return db_activity

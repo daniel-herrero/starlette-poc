@@ -258,3 +258,15 @@ class Attachment(Base):
     owner = relationship('User', foreign_keys=[owner_id])
     project = relationship('Project', foreign_keys=[project_id])
     user_story = relationship('UserStory', foreign_keys=[object_id])
+
+
+class DbActivity(Base):
+    __tablename__ = 'db_activity'
+
+    id = Column(Integer, primary_key=True)
+    created_at = Column(TIMESTAMP)
+    event = Column(String)
+    obj_id = Column(Integer)
+    project_id = Column(Integer)
+    obj_type = Column(String)
+    obj_changes = Column(JSON, nullable=True)

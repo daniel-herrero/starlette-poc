@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session
 
-from . import models
-from .schemas import DbActivityBase
+from app.models import models
+from app.schemas.schemas import DbActivityBase
 
 
 def get_users(db: Session, skip: int = 0, limit: int = 100):

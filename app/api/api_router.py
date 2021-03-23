@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 
-from .endpoints import epics, userstories, users, projects, websocket, tasks
+from app.api.routers import epics, userstories, users, projects, websocket, tasks
 
 api_router = APIRouter()
 

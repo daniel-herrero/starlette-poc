@@ -32,3 +32,6 @@ class Notifier:
             await websocket.send_text(message)
             living_connections.append(websocket)
         self.connections = living_connections
+
+
+

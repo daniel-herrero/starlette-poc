@@ -4,10 +4,12 @@ from typing import List
 from fastapi import Depends
 from sqlalchemy.orm import Session
 
-from app.database import schemas, crud, models
 from starlette.exceptions import HTTPException
 
-from app.database.database import engine, get_db
+from app.database.database import get_db, engine
+from app.api import crud
+from app.schemas import schemas
+from app.models import models
 
 models.Base.metadata.create_all(bind=engine)
 

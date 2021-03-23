@@ -8,12 +8,15 @@ from sqlalchemy.orm import Session
 from starlette.exceptions import HTTPException
 from sqlalchemy.orm.exc import StaleDataError
 
-from app.database import schemas, crud, models
-from app.database.crud import create_activity
+from app import notifier
+from app.api.crud.crud import create_activity, get_uss, get_us, update_us_subject
+
 from app.database.database import engine, get_db
 
-from app import send_ws_notification
-from app.database.schemas import DbActivityBase
+from app.api.api_responses import ws_response
+from app.schemas.schemas import DbActivityBase
+from app.schemas import schemas
+from app.models import models
 
 models.Base.metadata.create_all(bind=engine)
 
@@ -26,13 +29,13 @@ router = APIRouter(
 
 @router.get("/", response_model=List[schemas.UserStory])
 async def read_userstories(skip: int = 0, limit: int = 1000, db: Session = Depends(get_db)):
-    uss = crud.get_uss(db, skip=skip, limit=limit)
+    uss = get_uss(db, skip=skip, limit=limit)
     return uss
 
 
 @router.get("/{us_id}", response_model=schemas.UserStory)
 async def read_us(us_id: int, db: Session = Depends(get_db)):
-    db_us = crud.get_us(db, us_id=us_id)
+    db_us = get_us(db, us_id=us_id)
     if db_us is None:
         raise HTTPException(status_code=404, detail="Userstory not found")
     return db_us
@@ -42,13 +45,13 @@ async def read_us(us_id: int, db: Session = Depends(get_db)):
 async def update_us_title(us_id: int, subject: str = Form(...), version: int = Form(...),
                           db: Session = Depends(get_db)):
     # recover the us to update
-    us = crud.get_us(db, us_id=us_id)
+    us = get_us(db, us_id=us_id)
     if us is None:
         raise HTTPException(status_code=404, detail="Userstory not found")
     else:
         us_s = schemas.UserStory.from_orm(us).dict()
         # writing the updated user story on database
-        db_us = crud.update_us_subject(db, us, subject, version)
+        db_us = update_us_subject(db, us, subject, version)
 
         # calculate the activity changes for the user story
         db_us_s = schemas.UserStory.from_orm(db_us).dict()
@@ -62,7 +65,7 @@ async def update_us_title(us_id: int, subject: str = Form(...), version: int = F
         create_activity(db, db_activity)
 
         # send the activity log through websockets
-        await send_ws_notification("db_access", "userstory", db_us.id, db_us.project_id, changes)
+        await notifier.push(ws_response("db_access", "userstory", db_us.id, db_us.project_id, changes))
 
         return db_us
 
@@ -70,7 +73,7 @@ async def update_us_title(us_id: int, subject: str = Form(...), version: int = F
 @router.patch("/{us_id}/sleep/{num_secs}", response_model=schemas.UserStory)
 async def update_us_title(us_id: int, subject: str = Form(...), version: int = Form(...), num_secs: int = 0,
                           db: Session = Depends(get_db)):
-    us = crud.get_us(db, us_id=us_id)
+    us = get_us(db, us_id=us_id)
     if us is None:
         raise HTTPException(status_code=404, detail="Userstory not found")
     else:
@@ -79,7 +82,7 @@ async def update_us_title(us_id: int, subject: str = Form(...), version: int = F
 
         us_s = schemas.UserStory.from_orm(us).dict()
         # writing the updated user story on database
-        db_us = crud.update_us_subject(db, us, subject, version)
+        db_us = update_us_subject(db, us, subject, version)
         if isinstance(db_us, StaleDataError):
             return {"error": "Not updated"}
         else:
@@ -95,6 +98,6 @@ async def update_us_title(us_id: int, subject: str = Form(...), version: int = F
             create_activity(db, db_activity)
 
             # send the activity log through websockets
-            await send_ws_notification("db_access", "userstory", db_us.id, db_us.project_id, changes)
+            await notifier.push(ws_response("db_access", "userstory", db_us.id, db_us.project_id, changes))
 
         return db_us

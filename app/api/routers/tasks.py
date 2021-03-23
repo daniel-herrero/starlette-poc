@@ -5,7 +5,9 @@ from fastapi import Depends
 from sqlalchemy.orm import Session
 
 from app.database.database import engine, get_db
-from app.database import schemas, crud, models
+from app.schemas import schemas
+from app.models import models
+from app.api import crud
 from starlette.exceptions import HTTPException
 
 

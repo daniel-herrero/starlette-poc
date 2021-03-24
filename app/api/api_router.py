@@ -1,11 +1,11 @@
 from fastapi import APIRouter
 
-from app.api.routers import epics, userstories, users, projects, websocket, tasks
+from app.api.routers import epics, user_stories, users, projects, websocket, tasks
 
 api_router = APIRouter()
 
 api_router.include_router(users.router)
-api_router.include_router(userstories.router)
+api_router.include_router(user_stories.router)
 api_router.include_router(projects.router)
 api_router.include_router(epics.router)
 api_router.include_router(tasks.router)

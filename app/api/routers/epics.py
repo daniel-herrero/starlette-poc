@@ -3,15 +3,13 @@ from typing import List
 
 from fastapi import Depends
 from sqlalchemy.orm import Session
-
 from starlette.exceptions import HTTPException
 
-from app.database.database import get_db, engine
-from app.api import crud
-from app.schemas import schemas
-from app.models import models
+from app.database.database import get_db, engine, Base
+from app.crud.crud_epic import epic_crud
+from app.schemas.epic import Epic
 
-models.Base.metadata.create_all(bind=engine)
+Base.metadata.create_all(bind=engine)
 
 router = APIRouter(
     prefix="/epics",
@@ -20,15 +18,15 @@ router = APIRouter(
 )
 
 
-@router.get("/", response_model=List[schemas.Epic])
+@router.get("/", response_model=List[Epic])
 def read_epics(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
-    epics = crud.get_epics(db, skip=skip, limit=limit)
+    epics = epic_crud.get_multi(db, skip=skip, limit=limit)
     return epics
 
 
-@router.get("/{epic_id}", response_model=schemas.Epic)
+@router.get("/{epic_id}", response_model=Epic)
 def read_epic(epic_id: int, db: Session = Depends(get_db)):
-    db_epic = crud.get_epic(db, epic_id=epic_id)
+    db_epic = epic_crud.get(db, epic_id)
     if db_epic is None:
         raise HTTPException(status_code=404, detail="Epic not found")
     return db_epic

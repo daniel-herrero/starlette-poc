@@ -9,16 +9,13 @@ from starlette.exceptions import HTTPException
 from sqlalchemy.orm.exc import StaleDataError
 
 from app import notifier
-from app.api.crud.crud import create_activity, get_uss, get_us, update_us_subject
-
-from app.database.database import engine, get_db
-
+from app.crud.crud_db_activity import db_activity_crud
+from app.crud.crud_user_story import user_story_crud
+from app.database.database import engine, get_db, Base
 from app.api.api_responses import ws_response
-from app.schemas.schemas import DbActivityBase
-from app.schemas import schemas
-from app.models import models
+from app import schemas
 
-models.Base.metadata.create_all(bind=engine)
+Base.metadata.create_all(bind=engine)
 
 router = APIRouter(
     prefix="/userstories",
@@ -29,13 +26,13 @@ router = APIRouter(
 
 @router.get("/", response_model=List[schemas.UserStory])
 async def read_userstories(skip: int = 0, limit: int = 1000, db: Session = Depends(get_db)):
-    uss = get_uss(db, skip=skip, limit=limit)
+    uss = user_story_crud.get_multi(db, skip=skip, limit=limit)
     return uss
 
 
 @router.get("/{us_id}", response_model=schemas.UserStory)
 async def read_us(us_id: int, db: Session = Depends(get_db)):
-    db_us = get_us(db, us_id=us_id)
+    db_us = user_story_crud.get(db, us_id)
     if db_us is None:
         raise HTTPException(status_code=404, detail="Userstory not found")
     return db_us
@@ -45,35 +42,35 @@ async def read_us(us_id: int, db: Session = Depends(get_db)):
 async def update_us_title(us_id: int, subject: str = Form(...), version: int = Form(...),
                           db: Session = Depends(get_db)):
     # recover the us to update
-    us = get_us(db, us_id=us_id)
+    us = user_story_crud.get(db, us_id)
     if us is None:
         raise HTTPException(status_code=404, detail="Userstory not found")
-    else:
-        us_s = schemas.UserStory.from_orm(us).dict()
-        # writing the updated user story on database
-        db_us = update_us_subject(db, us, subject, version)
 
-        # calculate the activity changes for the user story
-        db_us_s = schemas.UserStory.from_orm(db_us).dict()
-        changes = DeepDiff(us_s, db_us_s)
+    us_s = schemas.UserStory.from_orm(us).dict()
+    # writing the updated user story on database
+    db_us = user_story_crud.update_us_subject(db, us, subject)
 
-        # write the activity log on database
-        db_activity = DbActivityBase(db=db, created_at=datetime.now(), event="update_us", obj_type="us",
-                                     project_id=db_us_s["project"]["id"], obj_id=db_us_s["id"],
-                                     obj_changes=changes.to_dict())
+    # calculate the activity changes for the user story
+    db_us_s = schemas.UserStory.from_orm(db_us).dict()
+    changes = DeepDiff(us_s, db_us_s)
 
-        create_activity(db, db_activity)
+    # write the activity log on database
+    db_activity = schemas.DbActivityBase(db=db, created_at=datetime.now(), event="update_us", obj_type="us",
+                                         project_id=db_us_s["project"]["id"], obj_id=db_us_s["id"],
+                                         obj_changes=changes.to_dict())
 
-        # send the activity log through websockets
-        await notifier.push(ws_response("db_access", "userstory", db_us.id, db_us.project_id, changes))
+    db_activity_crud.create_activity(db, db_activity)
 
-        return db_us
+    # send the activity log through websockets
+    await notifier.push(ws_response("db_access", "userstory", db_us.id, db_us.project_id, changes))
+
+    return db_us
 
 
 @router.patch("/{us_id}/sleep/{num_secs}", response_model=schemas.UserStory)
 async def update_us_title(us_id: int, subject: str = Form(...), version: int = Form(...), num_secs: int = 0,
                           db: Session = Depends(get_db)):
-    us = get_us(db, us_id=us_id)
+    us = user_story_crud.get(db, us_id)
     if us is None:
         raise HTTPException(status_code=404, detail="Userstory not found")
     else:
@@ -82,7 +79,7 @@ async def update_us_title(us_id: int, subject: str = Form(...), version: int = F
 
         us_s = schemas.UserStory.from_orm(us).dict()
         # writing the updated user story on database
-        db_us = update_us_subject(db, us, subject, version)
+        db_us = user_story_crud.update_us_subject(db, us, subject)
         if isinstance(db_us, StaleDataError):
             return {"error": "Not updated"}
         else:
@@ -91,11 +88,11 @@ async def update_us_title(us_id: int, subject: str = Form(...), version: int = F
             changes = DeepDiff(us_s, db_us_s)
 
             # write the activity log on database
-            db_activity = DbActivityBase(db=db, created_at=datetime.now(), event="update_us", obj_type="us",
+            db_activity = schemas.DbActivityBase(db=db, created_at=datetime.now(), event="update_us", obj_type="us",
                                          project_id=db_us_s["project"]["id"], obj_id=db_us_s["id"],
                                          obj_changes=changes.to_dict())
 
-            create_activity(db, db_activity)
+            db_activity_crud.create_activity(db, db_activity)
 
             # send the activity log through websockets
             await notifier.push(ws_response("db_access", "userstory", db_us.id, db_us.project_id, changes))

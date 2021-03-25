@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 
-from app.schemas.project import Project
+from app.serializers.project import Project
 
 
 # Shared properties

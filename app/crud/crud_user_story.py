@@ -1,8 +1,8 @@
 from sqlalchemy.orm import Session
 
 from app.crud.Base import CRUDBase
-from app.models.user_story import UserStory
-from app.schemas.user_stories import UserStoryCreate, UserStoryUpdate
+from app.db_models.user_story import UserStory
+from app.serializers.user_stories import UserStoryCreate, UserStoryUpdate
 
 
 class CRUDUserStory(CRUDBase[UserStory, UserStoryCreate, UserStoryUpdate]):

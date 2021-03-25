@@ -6,7 +6,7 @@ from pydantic.schema import datetime, Optional
 
 
 # Shared properties
-from app.schemas.user import User, UserBase
+from app.serializers.user import UserPartial
 
 
 class ProjectBase(BaseModel):
@@ -48,7 +48,7 @@ class ProjectCreate(ProjectBase):
     anon_permissions: List[str]
     public_permissions: List[str]
     is_private: bool
-    owner: Optional[User]
+    owner: Optional[UserPartial]
     is_featured: bool
     is_looking_for_people: bool
     total_activity: int
@@ -87,7 +87,7 @@ class ProjectInDBBase(ProjectBase):
     anon_permissions: List[str]
     public_permissions: List[str]
     is_private: bool
-    owner: Optional[User]
+    owner: Optional[UserPartial]
     is_featured: bool
     is_looking_for_people: bool
     total_activity: int

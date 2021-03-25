@@ -9,7 +9,7 @@ from pydantic.schema import Optional
 
 
 # Shared properties
-from app.schemas.project import Project
+from app.serializers.project import Project
 
 
 class EpicBase(BaseModel):

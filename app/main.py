@@ -5,7 +5,7 @@ from fastapi import FastAPI
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
 from app.api.api_router import api_router
-from app.api.api_responses import error_response, exception_notification
+from app.api.common_responses import error_response, exception_notification
 from app import notifier
 
 
@@ -26,7 +26,7 @@ async def validation_exception_handler(request, exc):
 
     await notifier.push(exception_notification(exc))
 
-    return JSONResponse(error_response("StaleDataError", "Content has been update by another user"), status_code=400)
+    return JSONResponse(error_response("staleData", "Content has been update by another user"), status_code=400)
 
 
 

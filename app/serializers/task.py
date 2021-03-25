@@ -5,7 +5,7 @@ from pydantic import BaseModel
 from pydantic.schema import datetime, Optional
 
 # Shared properties
-from app.schemas.user import User
+from app.serializers.user import UserPartial
 
 
 class TaskBase(BaseModel):
@@ -38,9 +38,9 @@ class TaskInDBBase(TaskBase):
     modified_date: datetime
     finished_date: Optional[datetime]
     description: str
-    assigned_to: Optional[User]
+    assigned_to: Optional[UserPartial]
     milestone_id: Optional[int]
-    owner: User
+    owner: UserPartial
     # project: Project
     status_id: int
     # user_story: UserStory

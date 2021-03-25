@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING
 from sqlalchemy import BigInteger, Boolean, Column, ForeignKey, Integer, Date, TIMESTAMP, Text, JSON
 from sqlalchemy.orm import relationship
 
-from app.database.database import Base
+from app.core.database import Base
 
 # from .user_story import UserStory
 # from .user import User

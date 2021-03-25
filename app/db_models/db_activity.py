@@ -1,5 +1,5 @@
 from sqlalchemy import Column, Integer, String, TIMESTAMP, JSON
-from app.database.database import Base
+from app.core.database import Base
 
 
 class DbActivity(Base):

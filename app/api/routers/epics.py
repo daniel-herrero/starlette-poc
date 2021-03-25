@@ -5,9 +5,9 @@ from fastapi import Depends
 from sqlalchemy.orm import Session
 from starlette.exceptions import HTTPException
 
-from app.database.database import get_db, engine, Base
+from app.core.database import get_db, engine, Base
 from app.crud.crud_epic import epic_crud
-from app.schemas.epic import Epic
+from app.serializers.epic import Epic
 
 Base.metadata.create_all(bind=engine)
 

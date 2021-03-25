@@ -4,7 +4,7 @@ from sqlalchemy import ARRAY, BigInteger, Boolean, Column, ForeignKey, Float, In
     UniqueConstraint
 from sqlalchemy.orm import relationship
 
-from app.database.database import Base
+from app.core.database import Base
 
 
 if TYPE_CHECKING:

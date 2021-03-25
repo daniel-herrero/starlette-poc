@@ -3,22 +3,42 @@ from pydantic import BaseModel
 from pydantic.schema import datetime, Optional
 
 
-# Shared properties
-class UserBase(BaseModel):
+class UserPartial(BaseModel):
+    """
+    Minimum properties to serialize
+    """
+    id: int
     username: str
     full_name: str
-    photo: str
+    photo: Optional[str]
+    email: str
+    color: str
+    is_system: bool
+    theme: Optional[str]
+    uuid: str
+
+    class Config:
+        orm_mode = True
+
+
+class UserFull(UserPartial):
+    """
+    Complete properties list to serialize
+    """
+    username: str
+    full_name: str
+    photo: Optional[str]
     is_active: bool
     is_superuser: bool
     email: str
     color: str
     bio: str
     date_joined: datetime
-    lang: str
-    timezone: str
+    lang: Optional[str]
+    timezone: Optional[str]
     colorize_tags: bool
     is_system: bool
-    theme: str
+    theme: Optional[str]
     uuid: str
     accepted_terms: bool
     read_new_terms: bool
@@ -34,30 +54,3 @@ class UserBase(BaseModel):
     max_memberships_private_projec:  Optional[int]
     max_memberships_public_projects:  Optional[int]
 
-
-# Properties to receive on task creation
-class UserCreate(UserBase):
-    password: str
-
-
-# Properties to receive on task update
-class UserUpdate(UserBase):
-    password: Optional[str]
-
-
-# Properties shared by models stored in DB
-class UserInDBBase(UserBase):
-    id: int
-
-    class Config:
-        orm_mode = True
-
-
-# Properties to return to client
-class User(UserInDBBase):
-    pass
-
-
-# Properties properties stored in DB
-class UserInDB(User):
-    pass

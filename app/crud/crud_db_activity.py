@@ -2,8 +2,8 @@ from fastapi.encoders import jsonable_encoder
 from sqlalchemy.orm import Session
 
 from app.crud.Base import CRUDBase
-from app.models.db_activity import DbActivity
-from app.schemas.db_activity import DbActivityCreate, DbActivityUpdate, DbActivityInDBBase
+from app.db_models.db_activity import DbActivity
+from app.serializers.db_activity import DbActivityCreate, DbActivityUpdate, DbActivityInDBBase
 
 
 class CRUDDbActivity(CRUDBase[DbActivity, DbActivityCreate, DbActivityUpdate]):

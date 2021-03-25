@@ -2,8 +2,8 @@ from fastapi.encoders import jsonable_encoder
 from sqlalchemy.orm import Session
 
 from app.crud.Base import CRUDBase
-from app.models.task import Task
-from app.schemas.task import TaskCreate, TaskUpdate
+from app.db_models.task import Task
+from app.serializers.task import TaskCreate, TaskUpdate
 
 
 class CRUDTask(CRUDBase[Task, TaskCreate, TaskUpdate]):

@@ -6,8 +6,8 @@ from sqlalchemy.orm import Session
 from starlette.exceptions import HTTPException
 
 from app.crud.crud_task import task_crud
-from app.database.database import engine, get_db, Base
-from app import schemas
+from app.core.database import engine, get_db, Base
+from app import serializers
 
 Base.metadata.create_all(bind=engine)
 
@@ -18,14 +18,14 @@ router = APIRouter(
 )
 
 
-@router.get("/", response_model=List[schemas.Task])
+@router.get("/", response_model=List[serializers.Task])
 def read_tasks(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     tasks = task_crud.get_multi(db, skip=skip, limit=limit)
 
     return tasks
 
 
-@router.get("/{task_id}", response_model=schemas.Task)
+@router.get("/{task_id}", response_model=serializers.Task)
 def read_task(task_id: int, db: Session = Depends(get_db)):
     db_task = task_crud.get(db, task_id)
     if db_task is None:

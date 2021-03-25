@@ -6,8 +6,8 @@ from sqlalchemy.orm import Session
 from starlette.exceptions import HTTPException
 
 from app.crud.crud_db_activity import db_activity_crud
-from app.database.database import get_db, engine, Base
-from app.schemas.db_activity import DbActivity
+from app.core.database import get_db, engine, Base
+from app.serializers.db_activity import DbActivity
 
 Base.metadata.create_all(bind=engine)
 

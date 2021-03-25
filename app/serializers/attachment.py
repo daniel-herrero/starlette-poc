@@ -2,22 +2,26 @@ from pydantic import BaseModel
 
 
 # Shared properties
-class AttachementBase(BaseModel):
-    pass
+from pydantic.schema import Optional
+
+
+class AttachmentBase(BaseModel):
+    object_id: Optional[int]
+    name: str
 
 
 # Properties to receive on task creation
-class AttachementCreate(AttachementBase):
+class AttachmentCreate(AttachmentBase):
     attached_file: str
 
 
 # Properties to receive on task update
-class AttachementUpdate(AttachementBase):
+class AttachmentUpdate(AttachmentBase):
     pass
 
 
 # Properties shared by models stored in DB
-class AttachementInDBBase(AttachementBase):
+class AttachmentInDBBase(AttachmentBase):
     id: int
 
     attached_file: str
@@ -27,10 +31,10 @@ class AttachementInDBBase(AttachementBase):
 
 
 # Properties to return to client
-class Attachement(AttachementInDBBase):
+class Attachment(AttachmentInDBBase):
     pass
 
 
 # Properties properties stored in DB
-class AttachementInDB(AttachementInDBBase):
+class AttachmentInDB(AttachmentInDBBase):
     pass

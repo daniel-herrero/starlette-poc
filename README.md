@@ -70,6 +70,11 @@ With this approach, it should be stored in the database a json serialization of 
 
 Ideally, it should be rendered a diff version with updated fields
 
+### Separate Validators and Serializers
+
+It can be reviewed in the user creation endpoint, using separate Pydantic's classes for input validations and json 
+response formatting 
+
 
 ### Large volume of data
 

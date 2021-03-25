@@ -1,6 +1,6 @@
 from app.crud.Base import CRUDBase
-from app.models.epic import Epic
-from app.schemas.epic import EpicCreate, EpicUpdate
+from app.db_models.epic import Epic
+from app.serializers.epic import EpicCreate, EpicUpdate
 
 
 class CRUDEpic(CRUDBase[Epic, EpicCreate, EpicUpdate]):

@@ -2,7 +2,7 @@ from sqlalchemy import BigInteger, Boolean, Column, ForeignKey, Float, Integer, 
     UniqueConstraint
 from sqlalchemy.orm import relationship
 
-from app.database.database import Base
+from app.core.database import Base
 
 
 class Epic(Base):

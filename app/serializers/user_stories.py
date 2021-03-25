@@ -6,18 +6,18 @@ from pydantic.schema import datetime, Optional
 
 
 # Shared properties
-from app.schemas.attachement import Attachement
-from app.schemas.epic import Epic
-from app.schemas.project import Project
-from app.schemas.task import Task
-from app.schemas.user import User
+from app.serializers.attachment import Attachment
+from app.serializers.epic import Epic
+from app.serializers.project import Project
+from app.serializers.task import Task
+from app.serializers.user import UserPartial
 
 
 class UserStoryBase(BaseModel):
     finish_date: Optional[datetime]
     epics: Optional[List[Epic]]
     tasks: Optional[List[Task]]
-    attachments: Optional[List[Attachement]]
+    attachments: Optional[List[Attachment]]
     external_reference: Optional[str]
     tribe_gig: Optional[str]
     due_date: Optional[str]
@@ -25,7 +25,7 @@ class UserStoryBase(BaseModel):
     generated_from_task_id: Optional[int]
     from_task_ref: Optional[str]
     swimlane_id: Optional[int]
-    assigned_to: Optional[User]
+    assigned_to: Optional[UserPartial]
     generated_from_issue_id: Optional[int]
     milestone_id: Optional[int]
 
@@ -48,7 +48,7 @@ class UserStoryCreate(UserStoryBase):
     created_date: datetime
     modified_date: datetime
     subject: str
-    owner: User
+    owner: UserPartial
     project: Project
 
     class Config:
@@ -83,7 +83,7 @@ class UserStoryInDBBase(UserStoryBase):
     created_date: datetime
     modified_date: datetime
     subject: str
-    owner: User
+    owner: UserPartial
     project: Project
 
     class Config:

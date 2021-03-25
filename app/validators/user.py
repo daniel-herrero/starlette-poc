@@ -4,8 +4,6 @@ from pydantic import BaseModel
 from pydantic.class_validators import validator
 from pydantic.schema import datetime, Optional
 
-from app.api.common_responses import error_response
-
 
 class UserCreateBaseVal(BaseModel):
     """

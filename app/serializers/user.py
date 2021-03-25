@@ -23,7 +23,7 @@ class UserPartial(BaseModel):
 
 class UserFull(UserPartial):
     """
-    Complete properties list to serialize
+    Complete properties list
     """
     username: str
     full_name: str

@@ -14,11 +14,12 @@ def ws_response(event: str, obj_type: str, obj_id: int, project_id: int, changes
         })
 
 
-def error_response(code: str, message: str):
+def error_response(code: str, message: str, detail: json = {}):
     return {
         "error": {
             "code": code,
             "message": message,
+            "detail": detail
         }
     }
 

@@ -37,7 +37,7 @@ async def create_user(user_in: validators.UserCreateVal, db: Session = Depends(g
     user_same_username = users_crud.get_by_username(db, username=user_in.username)
     if user_same_username or user_same_email:
         return JSONResponse(
-            error_response("existing.user", "The user with this username/email already exists in the system."),
+            error_response("existing.user.error", "The user with this username/email already exists in the system."),
             status_code=400)
 
     user = users_crud.create(db, obj_in=user_in)

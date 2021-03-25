@@ -12,6 +12,7 @@ class UserCreateBaseVal(BaseModel):
     Mandatory and explicit input parameters
     """
     password: str
+    password2: str
     username: str
     full_name: str
     email: str
@@ -24,13 +25,19 @@ class UserCreateBaseVal(BaseModel):
     @validator('full_name')
     def name_must_contain_space(cls, v):
         if ' ' not in v:
-            raise ValueError(json.loads(error_response('field.fullname', 'must contain a space')))
+            raise ValueError('must contain a space')
         return v.title()
 
     @validator('password')
     def passwords_length(cls, v):
         if len(v) <= 6:
             raise ValueError('Passwords must have 6 chars')
+        return v
+
+    @validator('password2')
+    def passwords_match(cls, v, values, **kwargs):
+        if 'password' in values and v != values['password']:
+            raise ValueError('passwords do not match')
         return v
 
 

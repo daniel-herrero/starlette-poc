@@ -28,7 +28,7 @@ async def read_user(user_id: int, db: Session = Depends(get_db)):
     return db_user
 
 
-@router.patch("/", response_model=serializers.UserPartial)
+@router.patch("/", response_model=serializers.UserFull)
 async def create_user(user_in: validators.UserCreateVal, db: Session = Depends(get_db)):
     """
     Create new user.
@@ -41,5 +41,10 @@ async def create_user(user_in: validators.UserCreateVal, db: Session = Depends(g
             status_code=400)
 
     user = users_crud.create(db, obj_in=user_in)
+
+    # To avoid using the response model and return a serializer according to a given parameter
+    # if zoom_level_1:
+    #   return serializers.UserPartial.from_orm(user)
+    # return serializers.UserFull.from_orm(user)
 
     return user

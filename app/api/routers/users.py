@@ -46,5 +46,6 @@ async def create_user(user_in: validators.UserCreateVal, db: Session = Depends(g
     # if zoom_level_1:
     #   return serializers.UserPartial.from_orm(user)
     # return serializers.UserFull.from_orm(user)
+    # Another option: https://github.com/tiangolo/fastapi/issues/1947
 
     return user
